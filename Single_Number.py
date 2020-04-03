@@ -1,13 +1,12 @@
-# Input: [2,2,1]
-# Output: 1
-
-
 class Solution:
     def singleNumber(self, nums: List[int]) -> int:
-        hashset = {}
+        mapping = {}
         for i in nums:
-            try:
-                hashset.pop(i)
-            except:
-                hashset[i] = 1
-        return hashset.popitem()[0]
+            if i not in mapping:
+                mapping[i] = 1
+            else:
+                mapping[i] = mapping[i]+1
+        
+        for item in mapping:
+            if mapping[item] == 1:
+                return item
