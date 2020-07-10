@@ -1,5 +1,6 @@
 class Solution:
     def isRobotBounded(self, instructions: str) -> bool:
+        # TC: O(n) SC:O(1)
         x, y, dx, dy = 0, 0, 0, 1
         for i in instructions:
             if i == "L":
