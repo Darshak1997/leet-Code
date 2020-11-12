@@ -3,21 +3,45 @@ class Solution:
         """
         Do not return anything, modify board in-place instead.
         """
-        queue = collections.deque([])
-        for r in range(len(board)):
-            for c in range(len(board[0])):
-                if (r in [0, len(board)-1] or c in [0, len(board[0])-1]) and board[r][c] == "O":
-                    queue.append((r, c))
-        while queue:
-            r, c = queue.popleft()
-            if 0<=r<len(board) and 0<=c<len(board[0]) and board[r][c] == "O":
-                board[r][c] = "D"
-                queue.append((r-1, c)); queue.append((r+1, c))
-                queue.append((r, c-1)); queue.append((r, c+1))
-
-        for r in range(len(board)):
-            for c in range(len(board[0])):
-                if board[r][c] == "O":
-                    board[r][c] = "X"
-                elif board[r][c] == "D":
-                    board[r][c] = "O"
+        self.grid = board
+        
+        # To see if there is a "O" on the boundary
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
+                if i == 0 or j == 0 or i == len(self.grid)-1 or j == len(self.grid[0])-1:
+                    if self.grid[i][j] == "O":
+                        self.no_boundary(i, j)
+        
+        # To check if there are regions to be flipped
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
+                if self.grid[i][j] == "O":
+                    self.boundary(i, j)
+                    
+        # To replace surrounded region by "O"
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
+                if self.grid[i][j] == "#":
+                    self.grid[i][j] = "O"
+        
+    # To mark the connected "O"s from boundary
+    def no_boundary(self, i, j):
+        if i < 0 or i >= len(self.grid) or j < 0 or j >= len(self.grid[0]) or self.grid[i][j] != "O":
+            return
+        
+        self.grid[i][j] = "#"
+        self.no_boundary(i-1, j)
+        self.no_boundary(i+1, j)
+        self.no_boundary(i, j-1)
+        self.no_boundary(i, j+1)
+        
+    # To check if a "O" can be flipped
+    def boundary(self, i, j):
+        if i < 0 or i >= len(self.grid) or j < 0 or j >= len(self.grid[0]) or self.grid[i][j] != "O":
+            return
+        
+        self.grid[i][j] = "X"
+        self.boundary(i-1, j)
+        self.boundary(i+1, j)
+        self.boundary(i, j-1)
+        self.boundary(i, j+1)
